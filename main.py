@@ -3,8 +3,8 @@ pygame.init()
 
 WINDOW_WIDTH = 1400
 WINDOW_HEIGHT= 800
-screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.RESIZABLE)
-title = pygame.display.set_caption("Cool Game")
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+title = pygame.display.set_caption("Explorer")
 
 bg = pygame.image.load('assets/images/jungle.jpg')
 bg = pygame.transform.scale(bg, (WINDOW_WIDTH, WINDOW_HEIGHT))
