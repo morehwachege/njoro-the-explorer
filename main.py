@@ -15,26 +15,20 @@ bg = pygame.transform.scale(bg, (WINDOW_WIDTH, WINDOW_HEIGHT))
 running = True
 i = 0
 while running:
-    # screen.fill((0,0,0))
-    # screen.blit(bg, (i, 0))
-    
-    
-    # elif(i==WINDOW_WIDTH):
-    #     screen.blit(bg, (WINDOW_WIDTH- 1, 0))
-    
+    keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                screen.fill((0,0,0))
-                screen.blit(bg, (i, 0))
-                screen.blit(bg, (WINDOW_WIDTH + i, 0))
-                if (i==-WINDOW_WIDTH):
-                    screen.blit(bg,(WINDOW_WIDTH+i,0))
-                    i=0
-                    print("Right key pressed")
-                i-=50
+    if keys[pygame.K_RIGHT]:
+        screen.fill((0,0,0))
+        screen.blit(bg, (i, 0))
+        screen.blit(bg, (WINDOW_WIDTH + i, 0))
+        if (i==-WINDOW_WIDTH):
+            screen.blit(bg,(WINDOW_WIDTH+i,0))
+            i=0
+            print("Right key pressed")
+        i-=5
+
 
 
     pygame.display.update()
