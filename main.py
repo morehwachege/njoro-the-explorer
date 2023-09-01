@@ -56,6 +56,18 @@ player = Player(300, 100)
 all_sprites.add(player)
 
 while running:
+    # run regardless
+    screen.fill((0,0,0))
+    screen.blit(bg, (i, 0))
+    screen.blit(bg, (WINDOW_WIDTH + i, 0))
+    if (i==-WINDOW_WIDTH):
+        screen.blit(bg,(WINDOW_WIDTH+i,0))
+        i=0
+        print("Right key pressed")
+    i-=2
+    player.animate()
+    # end run regardless
+
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -65,16 +77,16 @@ while running:
             if event.key == K_RIGHT:
                 player.update()
 
-    if keys[pygame.K_RIGHT]:
-        screen.fill((0,0,0))
-        screen.blit(bg, (i, 0))
-        screen.blit(bg, (WINDOW_WIDTH + i, 0))
-        if (i==-WINDOW_WIDTH):
-            screen.blit(bg,(WINDOW_WIDTH+i,0))
-            i=0
-            print("Right key pressed")
-        i-=2
-        player.animate()
+    # if keys[pygame.K_RIGHT]:
+    #     screen.fill((0,0,0))
+    #     screen.blit(bg, (i, 0))
+    #     screen.blit(bg, (WINDOW_WIDTH + i, 0))
+    #     if (i==-WINDOW_WIDTH):
+    #         screen.blit(bg,(WINDOW_WIDTH+i,0))
+    #         i=0
+    #         print("Right key pressed")
+    #     i-=2
+    #     player.animate()
 
     all_sprites.update()
     all_sprites.draw(screen)
