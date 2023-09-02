@@ -64,6 +64,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.x = horizontal_distance
 
     def jump(self, gravity):
+        """ 
+            Player sprite jump
+        """
         keys = pygame.key.get_pressed()
         vertical_distance = self.rect.y
         
@@ -79,4 +82,10 @@ class Player(pygame.sprite.Sprite):
             vertical_distance = self.WINDOW_HEIGHT - self.rect.height
             self.is_jumping = False  # Reset the jumping state
 
-        self.rect.y = vertical_distance   
+        self.rect.y = vertical_distance 
+
+
+    def detect_collision(self, sprite1, sprite2):
+        collided = pygame.sprite.collide_rect(sprite1, sprite2)
+        if collided == True:
+            print("We've collided")

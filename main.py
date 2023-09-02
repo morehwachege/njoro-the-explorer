@@ -3,6 +3,7 @@ from sprites.cloud import Cloud
 from sprites.enemies import Stump
 from sprites.player import Player
 import random
+import sys
 
 pygame.init()
 
@@ -63,13 +64,17 @@ while running:
             new_stump = Stump(WINDOW_WIDTH, WINDOW_HEIGHT)
             stumps.add(new_stump)
             all_sprites.add(new_stump)
-            print(stump_time)
+            # print(stump_time)
 
 
         elif event.type == ADDCLOUD:
             new_cloud = Cloud(WINDOW_WIDTH, WINDOW_HEIGHT)
             clouds.add(new_cloud)
             all_sprites.add(new_cloud)
+
+        if pygame.sprite.spritecollideany(player, stumps):
+            print("Collision detected boom!")
+            sys.exit()
 
     # if keys[pygame.K_RIGHT]:
     #     screen.fill((0,0,0))
