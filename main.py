@@ -1,4 +1,6 @@
 import pygame
+from cloud import Cloud
+
 pygame.init()
 
 WINDOW_WIDTH = 1400
@@ -10,8 +12,6 @@ title = pygame.display.set_caption("Njoro The Explorer")
 bg = pygame.image.load('assets/images/jungle.jpg')
 bg = pygame.transform.scale(bg, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
-# njoro = pygame.image.load("./assets/images/player/walking/kid2.png")
-# njoro = pygame.transform.scale(njoro, (150, 240))
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
@@ -20,6 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.sprites = []
         self.w = 120
         self.h = 200
+        self.speed = 3
+        self.direction = 0 # 0 = not moving, 1 = move right, -1 = move left
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h) ))
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)))
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid3.png'), (self.w, self.h)))
@@ -31,12 +33,33 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.topright = [WINDOW_WIDTH/3, WINDOW_HEIGHT - self.rect.height]
+
+
+    def move(self):
+        keys = pygame.key.get_pressed()
+        horizontal_distance = self.rect.x
+        if keys[pygame.K_LEFT]:
+            horizontal_distance -= self.speed
+            self.direction = -1
+        elif keys[pygame.K_RIGHT]:
+            horizontal_distance += self.speed
+            self.direction = 1
+        else:
+            self.direction = 0
+
+        # this willl stop the sprite
+        # if self.direction == 0:
+        #     self.is_animating = False
+
+        
+        if 0 <= horizontal_distance <= WINDOW_WIDTH - self.rect.width:
+            self.rect.x = horizontal_distance
     
 
 
     def update(self):
         if self.is_animating == True:
-            self.current_sprite += 0.1
+            self.current_sprite += 0.09
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
@@ -47,8 +70,15 @@ class Player(pygame.sprite.Sprite):
     
     def animate(self):
         self.is_animating = True
+        
 
 running = True
+
+clock = pygame.time.Clock()
+ADDCLOUD = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDCLOUD, 1500)
+clouds = pygame.sprite.Group()
+
 i = 0
 
 all_sprites = pygame.sprite.Group()
@@ -63,7 +93,6 @@ while running:
     if (i==-WINDOW_WIDTH):
         screen.blit(bg,(WINDOW_WIDTH+i,0))
         i=0
-        print("Right key pressed")
     i-=2
     player.animate()
     # end run regardless
@@ -73,9 +102,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        if event.type == pygame.K_UP:
-            if event.key == K_RIGHT:
-                player.update()
+        elif event.type == ADDCLOUD:
+            new_cloud = Cloud(WINDOW_WIDTH, WINDOW_HEIGHT)
+            clouds.add(new_cloud)
+            all_sprites.add(new_cloud)
 
     # if keys[pygame.K_RIGHT]:
     #     screen.fill((0,0,0))
@@ -86,8 +116,9 @@ while running:
     #         i=0
     #         print("Right key pressed")
     #     i-=2
-    #     player.animate()
+    #     player.animate(
 
+    player.move()
     all_sprites.update()
     all_sprites.draw(screen)
 
