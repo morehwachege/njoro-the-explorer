@@ -1,5 +1,7 @@
 import pygame
 from sprites.cloud import Cloud
+from sprites.enemies import Stump
+import random
 
 pygame.init()
 
@@ -96,9 +98,18 @@ class Player(pygame.sprite.Sprite):
 running = True
 
 clock = pygame.time.Clock()
+
+# add stumps
+ADDSTUMP = pygame.USEREVENT + 3
+stump_time = random.randint(3000, 15000)
+pygame.time.set_timer(ADDSTUMP, stump_time)
+stumps = pygame.sprite.Group()
+
+# add clouds
 ADDCLOUD = pygame.USEREVENT + 2
 pygame.time.set_timer(ADDCLOUD, 1500)
 clouds = pygame.sprite.Group()
+
 gravity = 2
 velocity_y = 10
 
@@ -107,6 +118,7 @@ i = 0
 all_sprites = pygame.sprite.Group()
 player = Player(300, 100)
 all_sprites.add(player)
+FPS = 100
 
 while running:
     # run regardless
@@ -124,6 +136,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        elif event.type == ADDSTUMP:
+            new_stump = Stump(WINDOW_WIDTH, WINDOW_HEIGHT)
+            stumps.add(new_stump)
+            all_sprites.add(new_stump)
+            print(stump_time)
+
 
         elif event.type == ADDCLOUD:
             new_cloud = Cloud(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -147,5 +166,6 @@ while running:
     all_sprites.draw(screen)
 
     pygame.display.update()
+    clock.tick(FPS)
 
 pygame.quit()
