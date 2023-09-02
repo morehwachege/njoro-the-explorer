@@ -1,10 +1,10 @@
 import pygame
-from cloud import Cloud
+from sprites.cloud import Cloud
 
 pygame.init()
 
-WINDOW_WIDTH = 1400
-WINDOW_HEIGHT= 800
+WINDOW_WIDTH = 1700
+WINDOW_HEIGHT= 900
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 title = pygame.display.set_caption("Njoro The Explorer")
 
