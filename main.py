@@ -20,9 +20,11 @@ class Player(pygame.sprite.Sprite):
         self.sprites = []
         self.w = 120
         self.h = 200
-        self.speed_x = 3
-        self.speed_y = 5
+        self.speed_x = 8.5
+        self.speed_y = 0
         self.direction = 0 # 0 = not moving, 1 = move right, -1 = move left
+        self.is_jumping = False
+        self.max_jump_height = 1000
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h) ))
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)))
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid3.png'), (self.w, self.h)))
@@ -74,13 +76,22 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         keys = pygame.key.get_pressed()
         vertical_distance = self.rect.y
-        if keys[pygame.K_UP]:
-            vertical_distance -= self.speed_y
-        if 0 <= vertical_distance <= WINDOW_HEIGHT + self.rect.height:
-            self.rect.y = vertical_distance
-
-
         
+        if keys[pygame.K_UP] and not self.is_jumping:  # Check if not already jumping
+            self.speed_y = -50  
+            self.is_jumping = True
+
+        if self.is_jumping:
+            self.speed_y += gravity
+            vertical_distance += self.speed_y
+
+        if vertical_distance >= WINDOW_HEIGHT - self.rect.height:
+            vertical_distance = WINDOW_HEIGHT - self.rect.height
+            self.is_jumping = False  # Reset the jumping state
+
+        self.rect.y = vertical_distance
+        
+
 
 running = True
 
@@ -88,6 +99,8 @@ clock = pygame.time.Clock()
 ADDCLOUD = pygame.USEREVENT + 2
 pygame.time.set_timer(ADDCLOUD, 1500)
 clouds = pygame.sprite.Group()
+gravity = 2
+velocity_y = 10
 
 i = 0
 
@@ -127,7 +140,7 @@ while running:
     #         print("Right key pressed")
     #     i-=2
     #     player.animate(
-
+   
     player.move()
     player.jump()
     all_sprites.update()
