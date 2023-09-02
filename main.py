@@ -47,6 +47,7 @@ pause_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
 font = pygame.font.Font(None, 38)
 
 def draw_pause():
+    " Draw Pause Screen"
     pygame.draw.rect(pause_surface, (0, 0, 0, 20), [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT])
     pygame.draw.rect(pause_surface, 'gray', [500, 150, 600, 50], 0, 10)
     save = pygame.draw.rect(pause_surface, 'dark green', [500, 400, 250, 60], 0, 15)
@@ -58,9 +59,7 @@ def draw_pause():
     pause_surface.blit(font.render('Quit', True, 'white'), (950, 415))
     pause_surface.blit(font.render('Play', True, 'black'), (770, 515))
 
-
     screen.blit(pause_surface, (0, 0))
-
     return play
 
 paused = False
