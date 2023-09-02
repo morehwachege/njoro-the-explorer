@@ -20,7 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.sprites = []
         self.w = 120
         self.h = 200
-        self.speed = 3
+        self.speed_x = 3
+        self.speed_y = 5
         self.direction = 0 # 0 = not moving, 1 = move right, -1 = move left
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h) ))
         self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)))
@@ -32,32 +33,11 @@ class Player(pygame.sprite.Sprite):
         self.image = self.sprites[self.current_sprite]
 
         self.rect = self.image.get_rect()
-        self.rect.topright = [WINDOW_WIDTH/3, WINDOW_HEIGHT - self.rect.height]
-
-
-    def move(self):
-        keys = pygame.key.get_pressed()
-        horizontal_distance = self.rect.x
-        if keys[pygame.K_LEFT]:
-            horizontal_distance -= self.speed
-            self.direction = -1
-        elif keys[pygame.K_RIGHT]:
-            horizontal_distance += self.speed
-            self.direction = 1
-        else:
-            self.direction = 0
-
-        # this willl stop the sprite
-        # if self.direction == 0:
-        #     self.is_animating = False
-
-        
-        if 0 <= horizontal_distance <= WINDOW_WIDTH - self.rect.width:
-            self.rect.x = horizontal_distance
-    
+        self.rect.topright = [WINDOW_WIDTH/3, WINDOW_HEIGHT - self.rect.height] 
 
 
     def update(self):
+        " Update walk speed animation"
         if self.is_animating == True:
             self.current_sprite += 0.09
             if self.current_sprite >= len(self.sprites):
@@ -70,6 +50,36 @@ class Player(pygame.sprite.Sprite):
     
     def animate(self):
         self.is_animating = True
+
+    def move(self):
+        keys = pygame.key.get_pressed()
+        horizontal_distance = self.rect.x
+        if keys[pygame.K_LEFT]:
+            horizontal_distance -= self.speed_x
+            self.direction = -1
+        elif keys[pygame.K_RIGHT]:
+            horizontal_distance += self.speed_x
+            self.direction = 1
+        else:
+            self.direction = 0
+
+        # this willl stop the sprite
+        # if self.direction == 0:
+        #     self.is_animating = False
+
+        
+        if 0 <= horizontal_distance <= WINDOW_WIDTH - self.rect.width:
+            self.rect.x = horizontal_distance
+
+    def jump(self):
+        keys = pygame.key.get_pressed()
+        vertical_distance = self.rect.y
+        if keys[pygame.K_UP]:
+            vertical_distance -= self.speed_y
+        if 0 <= vertical_distance <= WINDOW_HEIGHT + self.rect.height:
+            self.rect.y = vertical_distance
+
+
         
 
 running = True
@@ -119,6 +129,7 @@ while running:
     #     player.animate(
 
     player.move()
+    player.jump()
     all_sprites.update()
     all_sprites.draw(screen)
 
