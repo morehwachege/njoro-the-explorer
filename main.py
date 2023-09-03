@@ -25,7 +25,7 @@ clock = pygame.time.Clock()
 # add stumps
 ADDSTUMP = pygame.USEREVENT + 3
 # stump_time = random.randint(3000, 15000)
-stump_time = 3000
+stump_time = 7000
 pygame.time.set_timer(ADDSTUMP, stump_time)
 stumps = pygame.sprite.Group()
 
@@ -42,7 +42,7 @@ i = 0
 all_sprites = pygame.sprite.Group()
 player = Player(300, 100, WINDOW_WIDTH, WINDOW_HEIGHT)
 all_sprites.add(player)
-FPS = 200
+FPS = 80
 
 pause_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
 crash_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
@@ -66,6 +66,7 @@ def draw_pause():
 
 def crash():
     "Happens when player collides with enemy sprite"
+    clock.tick(60)
     pygame.draw.rect(crash_surface, (0, 0, 0, 20), [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT])
     pygame.draw.rect(crash_surface, 'gray', [500, 150, 600, 50], 0, 10)
 
@@ -73,10 +74,9 @@ def crash():
     h = 200
     # crash_surface.blit 
     # reload_img = pygame.transform.scale(pygame.image.load('./assets/images/reload.png'), (w, h))
-    # rect = reload_img.get_rect()
-    # rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
     play = pygame.draw.rect(crash_surface, 'lime', [500, 500, 600, 60], 0, 15)
     screen.blit(crash_surface, (0, 0))
+    print(clock.get_fps(), "after")
     return play
 
 paused = False
@@ -128,23 +128,12 @@ while running:
             pass
 
         if pygame.sprite.spritecollideany(player, stumps):
+            paused = False
             crashed = True
-            print("Collision detected boom!")
+            # print("Collision detected boom!")
             # sys.exit()
             play = crash()
 
-        
-
-    # if keys[pygame.K_RIGHT]:
-    #     screen.fill((0,0,0))
-    #     screen.blit(bg, (i, 0))
-    #     screen.blit(bg, (WINDOW_WIDTH + i, 0))
-    #     if (i==-WINDOW_WIDTH):
-    #         screen.blit(bg,(WINDOW_WIDTH+i,0))
-    #         i=0
-    #         print("Right key pressed")
-    #     i-=2
-    #     player.animate(
     if not paused and not crashed:
         player.move()
         player.jump(gravity)
