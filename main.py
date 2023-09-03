@@ -2,6 +2,7 @@ import pygame
 from sprites.cloud import Cloud
 from sprites.enemies import Stump
 from sprites.player import Player
+from sprites.gameplay import GameState
 import random
 import sys
 
