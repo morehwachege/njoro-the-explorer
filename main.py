@@ -24,7 +24,8 @@ clock = pygame.time.Clock()
 
 # add stumps
 ADDSTUMP = pygame.USEREVENT + 3
-stump_time = random.randint(3000, 15000)
+# stump_time = random.randint(3000, 15000)
+stump_time = 3000
 pygame.time.set_timer(ADDSTUMP, stump_time)
 stumps = pygame.sprite.Group()
 
@@ -41,9 +42,10 @@ i = 0
 all_sprites = pygame.sprite.Group()
 player = Player(300, 100, WINDOW_WIDTH, WINDOW_HEIGHT)
 all_sprites.add(player)
-FPS = 100
+FPS = 200
 
 pause_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+crash_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
 font = pygame.font.Font(None, 38)
 
 def draw_pause():
@@ -62,13 +64,26 @@ def draw_pause():
     screen.blit(pause_surface, (0, 0))
     return play
 
+def crash():
+    "Happens when player collides with enemy sprite"
+    pygame.draw.rect(crash_surface, (0, 0, 0, 20), [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT])
+    pygame.draw.rect(crash_surface, 'gray', [500, 150, 600, 50], 0, 10)
+
+    w = 120
+    h = 200
+    # crash_surface.blit 
+    # reload_img = pygame.transform.scale(pygame.image.load('./assets/images/reload.png'), (w, h))
+    # rect = reload_img.get_rect()
+    # rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
+    play = pygame.draw.rect(crash_surface, 'lime', [500, 500, 600, 60], 0, 15)
+    screen.blit(crash_surface, (0, 0))
+    return play
+
 paused = False
-    
+crashed = False
 
 while running:
-    # if paused:
-    #     draw_pause()
-    if not paused:
+    if not paused and not crashed:
         # run regardless
         screen.fill((0,0,0))
         screen.blit(bg, (i, 0))
@@ -79,7 +94,7 @@ while running:
         i-=2
         player.animate()
         # end run regardless
-    else:
+    elif paused:
         play = draw_pause()
 
 
@@ -95,26 +110,28 @@ while running:
                 else:
                     paused = True
 
-        if event.type == ADDSTUMP and not paused:
+        if event.type == ADDSTUMP and not paused and not crashed:
             new_stump = Stump(WINDOW_WIDTH, WINDOW_HEIGHT)
             stumps.add(new_stump)
             all_sprites.add(new_stump)
             # print(stump_time)
 
 
-        if event.type == ADDCLOUD and not paused:
+        if event.type == ADDCLOUD and not paused and not crashed:
             new_cloud = Cloud(WINDOW_WIDTH, WINDOW_HEIGHT)
             clouds.add(new_cloud)
             all_sprites.add(new_cloud)
 
-        if event.type == pygame.MOUSEBUTTONDOWN and paused:
+        if event.type == pygame.MOUSEBUTTONDOWN and paused and not crashed:
             if play.collidepoint(event.pos):
                 paused = False
             pass
 
         if pygame.sprite.spritecollideany(player, stumps):
+            crashed = True
             print("Collision detected boom!")
-            sys.exit()
+            # sys.exit()
+            play = crash()
 
         
 
@@ -128,7 +145,7 @@ while running:
     #         print("Right key pressed")
     #     i-=2
     #     player.animate(
-    if not paused:
+    if not paused and not crashed:
         player.move()
         player.jump(gravity)
         all_sprites.update()
@@ -136,7 +153,5 @@ while running:
 
     pygame.display.update()
     clock.tick(FPS)
-    # if paused:
-    #     draw_pause()
 
 pygame.quit()
