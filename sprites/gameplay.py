@@ -161,7 +161,6 @@ class GameState:
         h = 200
         # crash_surface.blit 
         reload_img = pygame.transform.scale(pygame.image.load('./assets/images/reload.png'), (w, h))
-        reload_img_rect = reload_img.get_rect()
         replay = pygame.draw.rect(crash_surface, 'orange', [650, 500, 200, 60], 0, 15)
         crash_surface.blit(font.render('Replay', True, 'black'), (700, 515))
         self.screen.blit(crash_surface, (0, 0))
