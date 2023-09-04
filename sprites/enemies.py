@@ -11,6 +11,6 @@ class Stump(pygame.sprite.Sprite):
         self.rect.bottomleft = [WINDOW_WIDTH, WINDOW_HEIGHT] 
 
     def update(self):
-        self.rect.move_ip(-2, 0)
+        self.rect.move_ip(-4, 0)
         if self.rect.right < 0:
             self.kill()
