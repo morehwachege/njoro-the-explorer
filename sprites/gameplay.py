@@ -160,7 +160,7 @@ class GameState:
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(3000)
+            pygame.time.delay(1000)
             self.state = "main_game"
             
         elif self.state == "main_game":
