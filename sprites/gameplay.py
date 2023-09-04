@@ -3,11 +3,11 @@ from .player import Player
 from .cloud import Cloud
 from .enemies import Stump
 import sys
-
+import time
 
 class GameState:
     def __init__(self, screen, WINDOW_WIDTH, WINDOW_HEIGHT, FPS):
-        self.state = 'main_game'
+        self.state = 'intro'
         self.screen = screen
         self.WINDOW_WIDTH = WINDOW_WIDTH
         self.WINDOW_HEIGHT = WINDOW_HEIGHT
@@ -34,37 +34,23 @@ class GameState:
         self.i = 0
 
 
-    def intro(self, font):
+    def intro(self):
             "Intro screen"
             intro_surface = pygame.Surface((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.SRCALPHA)
-            pygame.draw.rect(intro_surface, (0, 0, 0, 20), [0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT])
-            pygame.draw.rect(intro_surface, 'gray', [500, 150, 600, 50], 0, 10)
-            save = pygame.draw.rect(intro_surface, 'dark green', [500, 400, 250, 60], 0, 15)
-            quit_game = pygame.draw.rect(intro_surface, 'dark red', [850, 400, 250, 60], 0, 15)
-            play = pygame.draw.rect(intro_surface, 'lime', [500, 500, 600, 60], 0, 15)
-
-            intro_surface.blit(font.render('Game Paused: Space bar to resume', True, 'black'), (570, 160)) 
-            intro_surface.blit(font.render('Save', True, 'black'), (600, 415))
-            intro_surface.blit(font.render('Quit', True, 'white'), (950, 415))
-            intro_surface.blit(font.render('Play', True, 'black'), (770, 515))
-
+            pygame.draw.rect(intro_surface, (7, 0, 82, 20), [0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT])
+            njoro_img = pygame.transform.scale(pygame.image.load('./assets/images/hyena.png'), (800, 600))
+            self.screen.blit(njoro_img, (400, 170))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        if self.state == "paused":
-                            self.state = "main_game"
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if play.collidepoint(event.pos):
-                        self.state = "main_game"
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                #     if play.collidepoint(event.pos):
+                #         self.state = "main_game"
 
             self.screen.blit(intro_surface, (0, 0))
-            pygame.display.update()
+            pygame.display.flip()
 
-            return play
 
     def main_game(self):
         self.screen.fill((0,0,0))
@@ -172,7 +158,12 @@ class GameState:
         return replay
 
     def state_manager(self, font):
-        if self.state == "main_game":
+        if self.state == "intro":
+            self.intro()
+            pygame.time.delay(1000)
+            self.state = "main_game"
+            
+        elif self.state == "main_game":
             self.main_game()
         elif self.state == "paused":
             self.game_paused(font)

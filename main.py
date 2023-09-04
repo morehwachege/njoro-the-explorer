@@ -5,6 +5,7 @@ from sprites.player import Player
 from sprites.gameplay import GameState
 import random
 import sys
+import time
 
 pygame.init()
 
@@ -23,8 +24,10 @@ FPS = 80
 game = GameState(screen, WINDOW_WIDTH, WINDOW_HEIGHT, FPS)
 
 while running:
-    # game.state_manager(font)
-    game.intro(font)
+    # game.intro(font)
+    # time.sleep(2)
+    game.state_manager(font)
+
     clock.tick(FPS)
 
 pygame.quit()
