@@ -23,7 +23,8 @@ FPS = 80
 game = GameState(screen, WINDOW_WIDTH, WINDOW_HEIGHT, FPS)
 
 while running:
-    game.state_manager(font)
+    # game.state_manager(font)
+    game.intro(font)
     clock.tick(FPS)
 
 pygame.quit()

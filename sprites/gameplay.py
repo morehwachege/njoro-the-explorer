@@ -34,8 +34,37 @@ class GameState:
         self.i = 0
 
 
-    def intro(self):
-        pass 
+    def intro(self, font):
+            "Intro screen"
+            intro_surface = pygame.Surface((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.SRCALPHA)
+            pygame.draw.rect(intro_surface, (0, 0, 0, 20), [0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT])
+            pygame.draw.rect(intro_surface, 'gray', [500, 150, 600, 50], 0, 10)
+            save = pygame.draw.rect(intro_surface, 'dark green', [500, 400, 250, 60], 0, 15)
+            quit_game = pygame.draw.rect(intro_surface, 'dark red', [850, 400, 250, 60], 0, 15)
+            play = pygame.draw.rect(intro_surface, 'lime', [500, 500, 600, 60], 0, 15)
+
+            intro_surface.blit(font.render('Game Paused: Space bar to resume', True, 'black'), (570, 160)) 
+            intro_surface.blit(font.render('Save', True, 'black'), (600, 415))
+            intro_surface.blit(font.render('Quit', True, 'white'), (950, 415))
+            intro_surface.blit(font.render('Play', True, 'black'), (770, 515))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        if self.state == "paused":
+                            self.state = "main_game"
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if play.collidepoint(event.pos):
+                        self.state = "main_game"
+
+            self.screen.blit(intro_surface, (0, 0))
+            pygame.display.update()
+
+            return play
 
     def main_game(self):
         self.screen.fill((0,0,0))
