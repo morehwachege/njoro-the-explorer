@@ -68,14 +68,15 @@ class GameState:
                 self.clouds.add(new_cloud)
                 self.all_sprites.add(new_cloud)
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if play.collidepoint(event.pos):
-                    paused = False
-                pass
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if self.state == "main_game":
+                        self.state = "paused"
 
             if pygame.sprite.spritecollideany(self.player, self.stumps):
                 print("Collision detected boom!")
-                sys.exit()
+                self.state = "crashed"
+                # sys.exit()
 
         self.player.move()
         self.player.jump(self.gravity)
@@ -87,9 +88,6 @@ class GameState:
     def game_paused(self, font):
         " Draw Pause Screen"
         pause_surface = pygame.Surface((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.SRCALPHA)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
         pygame.draw.rect(pause_surface, (0, 0, 0, 20), [0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT])
         pygame.draw.rect(pause_surface, 'gray', [500, 150, 600, 50], 0, 10)
         save = pygame.draw.rect(pause_surface, 'dark green', [500, 400, 250, 60], 0, 15)
@@ -101,13 +99,25 @@ class GameState:
         pause_surface.blit(font.render('Quit', True, 'white'), (950, 415))
         pause_surface.blit(font.render('Play', True, 'black'), (770, 515))
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if self.state == "paused":
+                        self.state = "main_game"
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play.collidepoint(event.pos):
+                    self.state = "main_game"
+
         self.screen.blit(pause_surface, (0, 0))
         pygame.display.update()
 
         return play
-        pass
 
-    def crashed(self):
+    def crashed(self, font):
         "Happens when player collides with enemy sprite"
         crash_surface = pygame.Surface((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.SRCALPHA)
         for event in pygame.event.get():
@@ -125,9 +135,18 @@ class GameState:
         reload_img_rect = reload_img.get_rect()
         replay = pygame.draw.rect(crash_surface, 'orange', [650, 500, 200, 60], 0, 15)
         crash_surface.blit(font.render('Replay', True, 'black'), (700, 515))
-        screen.blit(crash_surface, (0, 0))
+        self.screen.blit(crash_surface, (0, 0))
         # reload image
         self.screen.blit(reload_img, ((self.WINDOW_WIDTH / 2) - reload_img.get_width(), (self.WINDOW_HEIGHT / 2) - reload_img.get_height()))
         pygame.display.update()
         
+        
         return replay
+
+    def state_manager(self, font):
+        if self.state == "main_game":
+            self.main_game()
+        elif self.state == "paused":
+            self.game_paused(font)
+        elif self.state == "crashed":
+            self.crashed(font)
