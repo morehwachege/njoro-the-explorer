@@ -37,20 +37,27 @@ font = pygame.font.Font(None, 38)
 
 def crash():
     "Happens when player collides with enemy sprite"
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
     clock.tick(60)
     pygame.draw.rect(crash_surface, (0, 0, 0, 20), [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT])
-    pygame.draw.rect(crash_surface, 'gray', [500, 150, 600, 50], 0, 10)
+    message = pygame.draw.rect(crash_surface, 'gray', [500, 150, 600, 50], 0, 10)
+    crash_surface.blit(font.render('You crashed! Click reload to try again', True, 'black'), (550, 162))
 
-    w = 120
+    w = 200
     h = 200
     # crash_surface.blit 
-    # reload_img = pygame.transform.scale(pygame.image.load('./assets/images/reload.png'), (w, h))
-    play = pygame.draw.rect(crash_surface, 'lime', [500, 500, 600, 60], 0, 15)
+    reload_img = pygame.transform.scale(pygame.image.load('./assets/images/reload.png'), (w, h))
+    reload_img_rect = reload_img.get_rect()
+    replay = pygame.draw.rect(crash_surface, 'orange', [650, 500, 200, 60], 0, 15)
+    crash_surface.blit(font.render('Replay', True, 'black'), (700, 515))
     screen.blit(crash_surface, (0, 0))
+    # reload image
+    screen.blit(reload_img, ((WINDOW_WIDTH / 2) - reload_img.get_width(), (WINDOW_HEIGHT / 2) - reload_img.get_height()))
     pygame.display.update()
-
-    print(clock.get_fps(), "after")
-    return play
+    return replay
 
 paused = False
 crashed = False
@@ -59,12 +66,13 @@ FPS = 80
 game_state = GameState(screen, WINDOW_WIDTH, WINDOW_HEIGHT, FPS)
 
 while running:
-    # game_state.main_game()
+    game_state.main_game()
     # for event in pygame.event.get():
     #     if event.type == pygame.QUIT:
     #         sys.exit()
     # draw_pause(screen, WINDOW_WIDTH, WINDOW_HEIGHT)
-    game_state.game_paused(font)
+    # game_state.game_paused(font)
+    # crash()
 
     clock.tick(FPS)
 
