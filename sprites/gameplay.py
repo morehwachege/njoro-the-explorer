@@ -38,7 +38,7 @@ class GameState:
             "Intro screen"
             intro_surface = pygame.Surface((self.WINDOW_WIDTH, self.WINDOW_HEIGHT), pygame.SRCALPHA)
             pygame.draw.rect(intro_surface, (7, 0, 82, 20), [0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT])
-            njoro_img = pygame.transform.scale(pygame.image.load('./assets/images/hyena.png'), (800, 600))
+            njoro_img = pygame.transform.scale(pygame.image.load('./assets/images/hyena.png').convert_alpha(), (800, 600))
             self.screen.blit(njoro_img, (400, 170))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -160,7 +160,7 @@ class GameState:
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(1000)
+            pygame.time.delay(3000)
             self.state = "main_game"
             
         elif self.state == "main_game":
