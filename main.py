@@ -9,8 +9,8 @@ import time
 
 pygame.init()
 
-WINDOW_WIDTH = 1500
-WINDOW_HEIGHT= 800
+WINDOW_WIDTH = 1800 # screen size minus 120
+WINDOW_HEIGHT= 880 # screen size minus 200 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 title = pygame.display.set_caption("Njoro The Explorer")
 
