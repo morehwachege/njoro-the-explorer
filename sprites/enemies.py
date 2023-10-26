@@ -11,6 +11,7 @@ class Stump(pygame.sprite.Sprite):
         self.rect.bottomleft = [WINDOW_WIDTH, WINDOW_HEIGHT] 
 
     def update(self):
+        """Move the stump based on a constant speed. Remove it when it passes the left edge of the screen"""
         self.rect.move_ip(-4, 0)
         if self.rect.right < 0:
             self.kill()

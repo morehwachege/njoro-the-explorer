@@ -12,7 +12,7 @@ pygame.init()
 
 for screen in get_monitors():
     if screen.is_primary:
-        WINDOW_WIDTH = screen.width - 120
+        WINDOW_WIDTH = screen.width - 100
         WINDOW_HEIGHT = screen.height - 200
 
 # WINDOW_WIDTH = 1800 # screen size minus 120
