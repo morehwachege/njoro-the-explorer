@@ -89,3 +89,10 @@ class Player(pygame.sprite.Sprite):
         collided = pygame.sprite.collide_rect(sprite1, sprite2)
         if collided == True:
             print("We've collided")
+
+    def mask(self):
+        return pygame.mask.from_surface(self.image)
+
+    def update_mask(self):
+        """Update the mask when the image changes (e.g., during animation)"""
+        self.mask = pygame.mask.from_surface(self.image)
