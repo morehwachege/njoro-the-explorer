@@ -26,7 +26,7 @@ running = True
 clock = pygame.time.Clock()
 
 font = pygame.font.Font(None, 38)
-FPS = 80
+FPS = 100
 
 game = GameState(screen, WINDOW_WIDTH, WINDOW_HEIGHT, FPS)
 

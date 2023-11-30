@@ -4,6 +4,7 @@ from .cloud import Cloud
 from .enemies import Stump
 import sys
 import time
+from .collisions import detect_collision
 
 class GameState:
     def __init__(self, screen, WINDOW_WIDTH, WINDOW_HEIGHT, FPS):
@@ -18,7 +19,7 @@ class GameState:
         # add stumps
         self.ADDSTUMP = pygame.USEREVENT + 3
         # stump_time = random.randint(3000, 15000)
-        stump_time = 7000
+        stump_time = 3000
         pygame.time.set_timer(self.ADDSTUMP, stump_time)
         self.stumps = pygame.sprite.Group()
 
@@ -65,18 +66,19 @@ class GameState:
 
 
         keys = pygame.key.get_pressed()
+        collided_stumps = pygame.sprite.spritecollide(self.player, self.stumps, dokill=False)
+        if collided_stumps:
+            if pygame.sprite.spritecollide(self.player, self.stumps, dokill=False, collided=pygame.sprite.collide_mask):
+                self.state = "crashed"
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # running = False
                 sys.exit()
-
 
             if event.type == self.ADDSTUMP:
                 new_stump = Stump(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
                 self.stumps.add(new_stump)
                 self.all_sprites.add(new_stump)
-                # print(stump_time)
-
 
             if event.type == self.ADDCLOUD:
                 new_cloud = Cloud(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
@@ -88,10 +90,11 @@ class GameState:
                     if self.state == "main_game":
                         self.state = "paused"
 
-            if pygame.sprite.spritecollideany(self.player, self.stumps):
-                print("Collision detected boom!")
-                self.state = "crashed"
-                # sys.exit()
+        
+
+            
+
+
 
         self.player.move()
         self.player.jump(self.gravity)
@@ -160,7 +163,7 @@ class GameState:
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(1000)
+            pygame.time.delay(000)
             self.state = "main_game"
             
         elif self.state == "main_game":

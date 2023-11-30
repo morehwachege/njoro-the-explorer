@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.topright = [self.WINDOW_WIDTH/3, self.WINDOW_HEIGHT - self.rect.height] 
-
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
         " Update walk speed animation"
@@ -84,14 +84,6 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.y = vertical_distance 
 
-
-    def detect_collision(self, sprite1, sprite2):
-        collided = pygame.sprite.collide_rect(sprite1, sprite2)
-        if collided == True:
-            print("We've collided")
-
-    def mask(self):
-        return pygame.mask.from_surface(self.image)
 
     def update_mask(self):
         """Update the mask when the image changes (e.g., during animation)"""
