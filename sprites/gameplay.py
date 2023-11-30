@@ -2,7 +2,7 @@ import pygame
 from .player import Player
 from .cloud import Cloud
 from .fruits import Apple
-from .enemies import Stump
+from .enemies import Stump, Hawk
 import sys
 import time
 from .collisions import detect_collision
@@ -16,22 +16,28 @@ class GameState:
         # background
         self.bg = pygame.image.load('assets/images/jungle.jpg')
         self.bg = pygame.transform.scale(self.bg, (WINDOW_WIDTH, WINDOW_HEIGHT))
-     
-        # add stumps
-        self.ADDSTUMP = pygame.USEREVENT + 3
-        # stump_time = random.randint(3000, 15000)
-        stump_time = 5000
-        pygame.time.set_timer(self.ADDSTUMP, stump_time)
-        self.stumps = pygame.sprite.Group()
 
         # add clouds
         self.ADDCLOUD = pygame.USEREVENT + 2
         pygame.time.set_timer(self.ADDCLOUD, 1500)
         self.clouds = pygame.sprite.Group()
+     
+        # add stumps
+        self.ADDSTUMP = pygame.USEREVENT + 3
+        stump_time = 5000
+        pygame.time.set_timer(self.ADDSTUMP, stump_time)
+        self.stumps = pygame.sprite.Group()
 
-        self.ADDAPPLE = pygame.USEREVENT + 2
+        # add apples
+        self.ADDAPPLE = pygame.USEREVENT + 1
         pygame.time.set_timer(self.ADDAPPLE, 3500)
         self.apples = pygame.sprite.Group()
+
+
+        # add hawks
+        self.ADDHAWK = pygame.USEREVENT + 5
+        pygame.time.set_timer(self.ADDHAWK, 2000)
+        self.hawks = pygame.sprite.Group()
 
         self.gravity = 2
         self.all_sprites = pygame.sprite.Group()
@@ -44,6 +50,8 @@ class GameState:
         self.start_time = pygame.time.get_ticks() 
         self.elapsed_time = 0
         self.paused_time = 0
+
+        self.score = 0
 
     def intro(self):
             "Intro screen"
@@ -86,6 +94,7 @@ class GameState:
         collided_apples = pygame.sprite.spritecollide(self.player, self.apples, dokill=False)
         if collided_apples:
             if pygame.sprite.spritecollide(self.player, self.apples, dokill=True, collided=pygame.sprite.collide_mask):
+                self.score += 50
                 pass
         else:
             pass
@@ -108,6 +117,11 @@ class GameState:
                 new_apple = Apple(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
                 self.apples.add(new_apple)
                 self.all_sprites.add(new_apple)
+            
+            if event.type == self.ADDHAWK:
+                new_hawk = Hawk(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
+                self.hawks.add(new_hawk)
+                self.all_sprites.add(new_hawk)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -115,6 +129,7 @@ class GameState:
                         self.state = "paused"
         self.update_timer()
         self.draw_timer()
+        self.score_board()
         self.player.move()
         self.player.jump(self.gravity)
         self.all_sprites.update()
@@ -196,17 +211,33 @@ class GameState:
         hours = self.elapsed_time // 3600
         minutes = (self.elapsed_time % 3600) // 60
         seconds = self.elapsed_time % 60
-        time_str = f"{hours:02d}hrs:{minutes:02d}mins:{seconds:02d}s"
+        time_str = f" {hours:02d}hrs:{minutes:02d}mins:{seconds:02d}s "
         font = pygame.font.Font(None, 36)
-        text = font.render(time_str, True, (255, 255, 255))
 
-        text_rect = text.get_rect(left=10, top=10)
-        self.screen.blit(text, text_rect)
+        background_surface = pygame.Surface((250, 50))
+        background_surface.fill((0, 0, 0)) 
+        text = font.render(time_str, True, (255, 255, 255))
+        text_rect = text.get_rect(center=(background_surface.get_width() // 2, background_surface.get_height() // 2))
+        self.screen.blit(background_surface, (10, 10))
+        self.screen.blit(text, (10 + (background_surface.get_width() - text_rect.width) // 2, 10 + (background_surface.get_height() - text_rect.height) // 2))
+
+    def score_board(self):
+        """Show Game Scores """
+        time_str = f"{self.score}"
+        font = pygame.font.Font(None, 36)
+
+        background_surface = pygame.Surface((250, 50))
+        background_surface.fill((0, 0, 0)) 
+        text = font.render(time_str, True, (255, 255, 255))
+        text_rect = text.get_rect(center=(background_surface.get_width() // 2, background_surface.get_height() // 2))
+        self.screen.blit(background_surface, (10, 80))
+        self.screen.blit(text, (10 + (background_surface.get_width() - text_rect.width) // 2, 80 + (background_surface.get_height() - text_rect.height) // 2))
+
 
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(1000)
+            pygame.time.delay(000)
             self.state = "main_game"
             
         elif self.state == "main_game":

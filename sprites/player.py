@@ -15,14 +15,27 @@ class Player(pygame.sprite.Sprite):
         self.direction = 0 # 0 = not moving, 1 = move right, -1 = move left
         self.is_jumping = False
         self.max_jump_height = 1000
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h) ))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid3.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid4.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid5.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid6.png'), (self.w, self.h)))
+
+        self.walking_sprites = [
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid3.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid4.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid5.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid6.png'), (self.w, self.h))
+        ]
+
+        self.jumping_sprites = [
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid1.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid2.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid3.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid4.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid5.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid6.png'), (self.w, self.h)),
+        ]
+
         self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
+        self.image = self.walking_sprites[self.current_sprite]
 
         self.rect = self.image.get_rect()
         self.rect.topright = [self.WINDOW_WIDTH/3, self.WINDOW_HEIGHT - self.rect.height] 
@@ -30,11 +43,13 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         " Update walk speed animation"
+        keys = pygame.key.get_pressed()
         if self.is_animating == True:
-            self.current_sprite += 0.09
+            self.current_sprite += 0.05
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
+            
             self.image = self.sprites[int(self.current_sprite)]
         else:
             self.current_sprite = 0
@@ -44,6 +59,9 @@ class Player(pygame.sprite.Sprite):
         self.is_animating = True
 
     def move(self):
+        """Move/walk forward/backwards """
+        self.sprites = self.walking_sprites
+        self.update()
         keys = pygame.key.get_pressed()
         horizontal_distance = self.rect.x
         if keys[pygame.K_LEFT]:
@@ -67,14 +85,16 @@ class Player(pygame.sprite.Sprite):
         """ 
             Player sprite jump
         """
-        keys = pygame.key.get_pressed()
         vertical_distance = self.rect.y
+        keys = pygame.key.get_pressed()
         
         if keys[pygame.K_UP] and not self.is_jumping:  # Check if not already jumping
             self.speed_y = -50  
             self.is_jumping = True
 
         if self.is_jumping:
+            self.sprites = self.jumping_sprites
+            self.update()
             self.speed_y += gravity
             vertical_distance += self.speed_y
 
