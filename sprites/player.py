@@ -43,11 +43,13 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         " Update walk speed animation"
+        keys = pygame.key.get_pressed()
         if self.is_animating == True:
             self.current_sprite += 0.05
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
+            
             self.image = self.sprites[int(self.current_sprite)]
         else:
             self.current_sprite = 0
@@ -83,8 +85,8 @@ class Player(pygame.sprite.Sprite):
         """ 
             Player sprite jump
         """
-        keys = pygame.key.get_pressed()
         vertical_distance = self.rect.y
+        keys = pygame.key.get_pressed()
         
         if keys[pygame.K_UP] and not self.is_jumping:  # Check if not already jumping
             self.speed_y = -50  
