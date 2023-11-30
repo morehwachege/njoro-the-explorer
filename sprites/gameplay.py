@@ -1,6 +1,7 @@
 import pygame 
 from .player import Player
 from .cloud import Cloud
+from .fruits import Apple
 from .enemies import Stump
 import sys
 import time
@@ -19,7 +20,7 @@ class GameState:
         # add stumps
         self.ADDSTUMP = pygame.USEREVENT + 3
         # stump_time = random.randint(3000, 15000)
-        stump_time = 3000
+        stump_time = 5000
         pygame.time.set_timer(self.ADDSTUMP, stump_time)
         self.stumps = pygame.sprite.Group()
 
@@ -27,6 +28,11 @@ class GameState:
         self.ADDCLOUD = pygame.USEREVENT + 2
         pygame.time.set_timer(self.ADDCLOUD, 1500)
         self.clouds = pygame.sprite.Group()
+
+        self.ADDAPPLE = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.ADDAPPLE, 3500)
+        self.apples = pygame.sprite.Group()
+
         self.gravity = 2
         self.all_sprites = pygame.sprite.Group()
         self.player = Player(300, 100, self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
@@ -34,6 +40,10 @@ class GameState:
         self.FPS = FPS
         self.i = 0
 
+        # for the timer
+        self.start_time = pygame.time.get_ticks() 
+        self.elapsed_time = 0
+        self.paused_time = 0
 
     def intro(self):
             "Intro screen"
@@ -70,6 +80,15 @@ class GameState:
         if collided_stumps:
             if pygame.sprite.spritecollide(self.player, self.stumps, dokill=False, collided=pygame.sprite.collide_mask):
                 self.state = "crashed"
+        else:
+            pass
+
+        collided_apples = pygame.sprite.spritecollide(self.player, self.apples, dokill=False)
+        if collided_apples:
+            if pygame.sprite.spritecollide(self.player, self.apples, dokill=True, collided=pygame.sprite.collide_mask):
+                pass
+        else:
+            pass
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -85,17 +104,17 @@ class GameState:
                 self.clouds.add(new_cloud)
                 self.all_sprites.add(new_cloud)
 
+            if event.type == self.ADDAPPLE:
+                new_apple = Apple(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
+                self.apples.add(new_apple)
+                self.all_sprites.add(new_apple)
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     if self.state == "main_game":
                         self.state = "paused"
-
-        
-
-            
-
-
-
+        self.update_timer()
+        self.draw_timer()
         self.player.move()
         self.player.jump(self.gravity)
         self.all_sprites.update()
@@ -125,6 +144,7 @@ class GameState:
                 if event.key == pygame.K_SPACE:
                     if self.state == "paused":
                         self.state = "main_game"
+                        self.paused_time = pygame.time.get_ticks()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play.collidepoint(event.pos):
@@ -160,10 +180,33 @@ class GameState:
         
         return replay
 
+    def update_timer(self):
+        """ Calculate elapsed time in seconds """
+        current_time = pygame.time.get_ticks()
+        if self.state == "main_game":
+            self.elapsed_time = (current_time - (self.paused_time - self.start_time )) // 1000  # Convert to seconds
+        # else:if self.state == "main_game":
+            self.elapsed_time = (current_time - (self.paused_time - self.start_time )) // 1000  # Convert to seconds
+        # else:
+        #     self.elapsed_time = (current_time - self.paused_time) // 1000
+
+
+    def draw_timer(self):
+        """Format the time """
+        hours = self.elapsed_time // 3600
+        minutes = (self.elapsed_time % 3600) // 60
+        seconds = self.elapsed_time % 60
+        time_str = f"{hours:02d}hrs:{minutes:02d}mins:{seconds:02d}s"
+        font = pygame.font.Font(None, 36)
+        text = font.render(time_str, True, (255, 255, 255))
+
+        text_rect = text.get_rect(left=10, top=10)
+        self.screen.blit(text, text_rect)
+
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(000)
+            pygame.time.delay(1000)
             self.state = "main_game"
             
         elif self.state == "main_game":
