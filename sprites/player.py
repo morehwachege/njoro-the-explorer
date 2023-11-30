@@ -44,11 +44,11 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         " Update walk speed animation"
         if self.is_animating == True:
-            self.current_sprite += 0.09
-            if self.current_sprite >= len(self.walking_sprites):
+            self.current_sprite += 0.05
+            if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
-            self.image = self.walking_sprites[int(self.current_sprite)]
+            self.image = self.sprites[int(self.current_sprite)]
         else:
             self.current_sprite = 0
 
@@ -58,6 +58,8 @@ class Player(pygame.sprite.Sprite):
 
     def move(self):
         """Move/walk forward/backwards """
+        self.sprites = self.walking_sprites
+        self.update()
         keys = pygame.key.get_pressed()
         horizontal_distance = self.rect.x
         if keys[pygame.K_LEFT]:
@@ -89,6 +91,8 @@ class Player(pygame.sprite.Sprite):
             self.is_jumping = True
 
         if self.is_jumping:
+            self.sprites = self.jumping_sprites
+            self.update()
             self.speed_y += gravity
             vertical_distance += self.speed_y
 
