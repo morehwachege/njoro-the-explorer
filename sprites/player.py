@@ -15,14 +15,27 @@ class Player(pygame.sprite.Sprite):
         self.direction = 0 # 0 = not moving, 1 = move right, -1 = move left
         self.is_jumping = False
         self.max_jump_height = 1000
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h) ))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid3.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid4.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid5.png'), (self.w, self.h)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid6.png'), (self.w, self.h)))
+
+        self.walking_sprites = [
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid1.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid2.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid3.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid4.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid5.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/walking/kid6.png'), (self.w, self.h))
+        ]
+
+        self.jumping_sprites = [
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid1.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid2.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid3.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid4.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid5.png'), (self.w, self.h)),
+            pygame.transform.scale(pygame.image.load('./assets/images/player/jumping/kid6.png'), (self.w, self.h)),
+        ]
+
         self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
+        self.image = self.walking_sprites[self.current_sprite]
 
         self.rect = self.image.get_rect()
         self.rect.topright = [self.WINDOW_WIDTH/3, self.WINDOW_HEIGHT - self.rect.height] 
@@ -32,10 +45,10 @@ class Player(pygame.sprite.Sprite):
         " Update walk speed animation"
         if self.is_animating == True:
             self.current_sprite += 0.09
-            if self.current_sprite >= len(self.sprites):
+            if self.current_sprite >= len(self.walking_sprites):
                 self.current_sprite = 0
                 self.is_animating = False
-            self.image = self.sprites[int(self.current_sprite)]
+            self.image = self.walking_sprites[int(self.current_sprite)]
         else:
             self.current_sprite = 0
 
@@ -44,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.is_animating = True
 
     def move(self):
+        """Move/walk forward/backwards """
         keys = pygame.key.get_pressed()
         horizontal_distance = self.rect.x
         if keys[pygame.K_LEFT]:
