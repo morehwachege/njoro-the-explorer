@@ -2,7 +2,7 @@ import pygame
 from .player import Player
 from .cloud import Cloud
 from .fruits import Apple
-from .enemies import Stump
+from .enemies import Stump, Hawk
 import sys
 import time
 from .collisions import detect_collision
@@ -16,22 +16,28 @@ class GameState:
         # background
         self.bg = pygame.image.load('assets/images/jungle.jpg')
         self.bg = pygame.transform.scale(self.bg, (WINDOW_WIDTH, WINDOW_HEIGHT))
-     
-        # add stumps
-        self.ADDSTUMP = pygame.USEREVENT + 3
-        # stump_time = random.randint(3000, 15000)
-        stump_time = 5000
-        pygame.time.set_timer(self.ADDSTUMP, stump_time)
-        self.stumps = pygame.sprite.Group()
 
         # add clouds
         self.ADDCLOUD = pygame.USEREVENT + 2
         pygame.time.set_timer(self.ADDCLOUD, 1500)
         self.clouds = pygame.sprite.Group()
+     
+        # add stumps
+        self.ADDSTUMP = pygame.USEREVENT + 3
+        stump_time = 5000
+        pygame.time.set_timer(self.ADDSTUMP, stump_time)
+        self.stumps = pygame.sprite.Group()
 
-        self.ADDAPPLE = pygame.USEREVENT + 2
+        # add apples
+        self.ADDAPPLE = pygame.USEREVENT + 1
         pygame.time.set_timer(self.ADDAPPLE, 3500)
         self.apples = pygame.sprite.Group()
+
+
+        # add hawks
+        self.ADDHAWK = pygame.USEREVENT + 5
+        pygame.time.set_timer(self.ADDHAWK, 2000)
+        self.hawks = pygame.sprite.Group()
 
         self.gravity = 2
         self.all_sprites = pygame.sprite.Group()
@@ -108,6 +114,11 @@ class GameState:
                 new_apple = Apple(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
                 self.apples.add(new_apple)
                 self.all_sprites.add(new_apple)
+            
+            if event.type == self.ADDHAWK:
+                new_hawk = Hawk(self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
+                self.hawks.add(new_hawk)
+                self.all_sprites.add(new_hawk)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -206,7 +217,7 @@ class GameState:
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(1000)
+            pygame.time.delay(000)
             self.state = "main_game"
             
         elif self.state == "main_game":
