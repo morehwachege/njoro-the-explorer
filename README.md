@@ -4,4 +4,4 @@
 </p>
 
 # Njoro The Explorer
-Just a game
+Just the best game!
