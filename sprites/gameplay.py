@@ -88,16 +88,19 @@ class GameState:
         if collided_stumps:
             if pygame.sprite.spritecollide(self.player, self.stumps, dokill=False, collided=pygame.sprite.collide_mask):
                 self.state = "crashed"
-        else:
-            pass
+
 
         collided_apples = pygame.sprite.spritecollide(self.player, self.apples, dokill=False)
         if collided_apples:
             if pygame.sprite.spritecollide(self.player, self.apples, dokill=True, collided=pygame.sprite.collide_mask):
                 self.score += 50
-                pass
-        else:
-            pass
+
+
+        collided_hawks = pygame.sprite.spritecollide(self.player, self.hawks, dokill=False)
+        if collided_hawks:
+            if pygame.sprite.spritecollide(self.player, self.hawks, dokill=True, collided=pygame.sprite.collide_mask):
+                self.state = "crashed"
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -237,7 +240,7 @@ class GameState:
     def state_manager(self, font):
         if self.state == "intro":
             self.intro()
-            pygame.time.delay(000)
+            pygame.time.delay(1000)
             self.state = "main_game"
             
         elif self.state == "main_game":

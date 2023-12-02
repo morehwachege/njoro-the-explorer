@@ -31,7 +31,7 @@ class Hawk(pygame.sprite.Sprite):
         self.WINDOW_HEIGHT = WINDOW_HEIGHT
         self.is_animating = True
         self.w = 120
-        self.h = 150
+        self.h = 130
 
         self.sprites = [
             pygame.transform.scale(pygame.image.load('./assets/images/enemy/hawk/hawk1.png'), (self.w, self.h)),
@@ -61,7 +61,7 @@ class Hawk(pygame.sprite.Sprite):
         " Update walk speed animation"
         keys = pygame.key.get_pressed()
         if self.is_animating == True:
-            self.current_sprite += .05
+            self.current_sprite += .19
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
@@ -70,7 +70,7 @@ class Hawk(pygame.sprite.Sprite):
         else:
             self.current_sprite = 0
             self.is_animating = True
-        self.rect.move_ip(-7, 0)
+        self.rect.move_ip(-9, 0)
         if self.rect.right < 0:
             self.kill()
 
