@@ -24,7 +24,7 @@ class GameState:
      
         # add stumps
         self.ADDSTUMP = pygame.USEREVENT + 3
-        stump_time = 5000
+        stump_time = 10000
         pygame.time.set_timer(self.ADDSTUMP, stump_time)
         self.stumps = pygame.sprite.Group()
 
@@ -36,7 +36,7 @@ class GameState:
 
         # add hawks
         self.ADDHAWK = pygame.USEREVENT + 5
-        pygame.time.set_timer(self.ADDHAWK, 2000)
+        pygame.time.set_timer(self.ADDHAWK, 4000)
         self.hawks = pygame.sprite.Group()
 
         self.gravity = 2
